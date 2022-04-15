@@ -1,0 +1,26 @@
+{
+  "bot": {
+    "messages": {
+      "welcome": "Welcome to ‘Super Yacht Chefs Club’Hey, I’m your HeadChef here on this group, specifically created for Yacht and Villa Chefs.\n\nBefore you start getting involved in the group, here are a few pointers and details on what it’s all about:\n \n1. This Group is specifically for Chefs – It’s been created so you can all discuss stuff in a free open environment unjudged by the rest of the World on Facebook and the Yachting industry.\n \n2. Your Telegram handle can be what you want it to be – Don’t choose your name – be imaginative – change it anytime in settings\n \n3. If you want, you can be completely anonymous – It’s up to you!\n \n4. Swearing is allowed – You’re Chefs – It’s part of the job for Christ’s sake\n \n5. But that doesn’t mean you can be a dick – So don’t be, or I may BAN you. Remember, this is my Kitchen on here. No Racism – No Sexism – Not in my Kitchen!\n \n6. Important message will be PINNED in the group. If you don’t know what that means google it. But we will do a little video to show you, don’t worry. A PINNED message could be anything from giveaways or competitions to massive industry news.\n \n7. Google ‘Privacy settings for telegram’ – It’s important to be safe.\n \n8. We will be adding a JOB Board and a RECIPE board soon too.\n\nEnjoy your time here, post shit, post recipes, help out anyone who asks for it, from places to get bollo watermelons in Positano to how to get food to the Galapagos. You all have a wealth of knowledge – pay it forward and remember – Post funny shit, we all work too hard to be serious all the time!\n\nAnd don’t forget to send the invite link to all your chef mates as it’s a Private club and without an invite link, you can’t get in!",
+      "bannedWordWarning": "HeadChefBot Here – I don’t like that company so I’ve banned you writing it in this club. Yes, you might think I’m a dick…and you might be right, but it’s my kitchen."
+    },
+
+    "bannedWords": [
+      "shit",
+      "Gourmet Deliveries",
+      "Just Provisioning",
+      "Green Chilli",
+      "Green Chili",
+      "Le Coin des Chefs",
+      "Ocean Pantry",
+      "Maison del Gusto",
+      "All Services",
+      "Mansueto",
+      "Turnaround",
+      "Spirit Services",
+      "Froggy",
+      "Froggy Gourmet",
+      "We Supply Yachts"
+    ]
+  }
+}
