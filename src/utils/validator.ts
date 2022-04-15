@@ -8,7 +8,7 @@ export const includesBannedWord = (message: string) => {
     const text = message?.toLowerCase();
     const words: string[] = bannedWords?.map((v) => v?.toLowerCase());
 
-    const isBannedWord = words.includes(text);
+    const isBannedWord = words.includes(text) || words.includes(`@${text}`);
     if (isBannedWord) return true;
 
     return false;

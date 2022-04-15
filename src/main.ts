@@ -15,7 +15,7 @@ import { Update } from "typegram";
 import { bot } from "./bot";
 
 (async () => {
-  const { PORT, BOT_WEBHOOK } = process.env;
+  const { PORT, BOT_MODE, BOT_WEBHOOK } = process.env;
 
   const app = fastify();
 
@@ -23,7 +23,11 @@ import { bot } from "./bot";
   const WEBHOOK = `${BOT_WEBHOOK}/${SECRET_PATH}`;
 
   // Bot
-  bot.telegram.setWebhook(WEBHOOK);
+  if (BOT_MODE === "webhook") {
+    bot.telegram.setWebhook(WEBHOOK);
+  } else {
+    bot.launch().catch();
+  }
 
   // Webhook
   app.post(`/${SECRET_PATH}`, (req, rep) => {
@@ -31,6 +35,6 @@ import { bot } from "./bot";
   });
 
   app.listen(PORT, () => {
-    console.log(`TelegramBot: Running [${PORT}]`);
+    console.log(`TelegramBot: Running/${BOT_MODE} [${PORT}]`);
   });
 })();
