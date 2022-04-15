@@ -2,12 +2,12 @@ import { Telegraf, session } from "telegraf";
 import nconf from "nconf";
 
 import { TelegramContext } from "@types";
-import { generateCaptcha, validator, messages as _messages } from "@utils";
+import { generateCaptcha, validator } from "@utils";
 
 const { BOT_TOKEN } = process.env;
 
 const config = nconf.get("bot");
-const messages = { ...config.messages, ..._messages };
+const messages = config.messages;
 
 export const bot = new Telegraf<TelegramContext>(BOT_TOKEN);
 
@@ -26,7 +26,7 @@ bot.on("text", async (ctx) => {
   const message = ctx.message.text;
 
   // Checking Captcha
-  if (!captcha?.isPassed) return ctx.deleteMessage();
+  if (captcha && !captcha.isPassed) return ctx.deleteMessage();
 
   // Checking Message
   const isBannedWord = validator.includesBannedWord(message);
