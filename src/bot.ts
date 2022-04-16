@@ -21,6 +21,10 @@ bot.use((ctx, next) => {
   next();
 });
 
+bot.command("test", (ctx) => {
+  ctx.reply(messages.welcome);
+});
+
 bot.on("text", async (ctx) => {
   const { captcha } = ctx.session;
   const message = ctx.message.text;
