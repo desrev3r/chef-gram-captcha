@@ -1,9 +1,12 @@
 import "module-alias/register";
 
 import dotenv from "dotenv";
-import fastify from "fastify";
 import nconf from "nconf";
 import path from "path";
+
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
 
 dotenv.config();
 nconf
@@ -14,41 +17,59 @@ nconf
 import { Update } from "typegram";
 import { bot } from "./bot";
 
-const { NODE_ENV, BOT_WEBHOOK } = process.env;
-
+const { NODE_ENV, BOT_WEBHOOK, BOT_WEBHOOK_SECRET_PATH } = process.env;
 const PORT = +process.env?.PORT;
-const BOT_MODE = NODE_ENV === "production" ? "webhook" : "pooling";
 
 (async () => {
-  const app = fastify();
+  try {
+    const app = express();
 
-  const SECRET_PATH = bot.secretPathComponent();
-  const BOT_MODE = NODE_ENV === "production" ? "webhook" : "pooling";
-  const WEBHOOK = `${BOT_WEBHOOK}/${SECRET_PATH}`;
+    app.use(bodyParser.json());
+    app.use(cors({ origin: "*" }));
 
-  // Checking the mode
-  switch (BOT_MODE) {
-    case "pooling":
-      bot.launch().catch();
-      break;
-    case "webhook":
-      bot.telegram.setWebhook(WEBHOOK);
+    const BOT_MODE = NODE_ENV === "production" ? "webhook" : "pooling";
+    const BOT_WEBHOOK_PATH = `${BOT_WEBHOOK}/${BOT_WEBHOOK_SECRET_PATH}`;
 
-      app.post(`/${SECRET_PATH}`, (req, rep) => {
-        bot.handleUpdate(<Update>req.body, rep.raw);
-      });
-      break;
+    // Checking the bot mode
+    switch (BOT_MODE) {
+      case "pooling":
+        bot
+          .launch()
+          .then(() => {
+            console.log("Bot", { BOT_MODE, BOT_WEBHOOK_PATH });
+          })
+          .catch();
+
+        break;
+      case "webhook":
+        bot.telegram.setWebhook(BOT_WEBHOOK_PATH);
+
+        app.post(`/${BOT_WEBHOOK_SECRET_PATH}`, (req, res) => {
+          bot.handleUpdate(<Update>req.body, res.raw);
+
+          res.status(200).send();
+        });
+        break;
+    }
+
+    // Running the server
+    app.get("", (req, res) => {
+      res.status(200).send();
+    });
+
+    app.listen(PORT, () => {
+      console.log("Server", { NODE_ENV, PORT });
+    });
+  } catch (e) {
+    console.log({ e });
   }
-
-  // Running the bot
-  app.listen(PORT, () => {
-    console.log("Bot", { PORT, BOT_MODE, BOT_WEBHOOK });
-  });
 })();
 
 process.on("uncaughtException", (e) => {
   console.log("uncaughtException", {
-    config: { PORT, BOT_MODE, BOT_WEBHOOK },
+    config: { NODE_ENV, PORT, BOT_WEBHOOK },
     e,
   });
+
+  process.exit(1);
 });
