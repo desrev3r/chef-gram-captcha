@@ -1,2 +1,3 @@
-# gram-captcha
-!just a simple bot that checks whether a new chat member is a bot
+# chef-gram-captcha
+
+telegram captcha bot for one of clients
