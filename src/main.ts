@@ -14,10 +14,12 @@ nconf
 import { Update } from "typegram";
 import { bot } from "./bot";
 
-(async () => {
-  const { NODE_ENV, BOT_WEBHOOK } = process.env;
-  const PORT = +process.env?.PORT;
+const { NODE_ENV, BOT_WEBHOOK } = process.env;
 
+const PORT = +process.env?.PORT;
+const BOT_MODE = NODE_ENV === "production" ? "webhook" : "pooling";
+
+(async () => {
   const app = fastify();
 
   const SECRET_PATH = bot.secretPathComponent();
@@ -45,5 +47,8 @@ import { bot } from "./bot";
 })();
 
 process.on("uncaughtException", (e) => {
-  console.log("uncaughtException", e);
+  console.log("uncaughtException", {
+    config: { PORT, BOT_MODE, BOT_WEBHOOK },
+    e,
+  });
 });
