@@ -15,26 +15,35 @@ import { Update } from "typegram";
 import { bot } from "./bot";
 
 (async () => {
-  const { PORT, BOT_MODE, BOT_WEBHOOK } = process.env;
+  const { NODE_ENV, BOT_WEBHOOK } = process.env;
+  const PORT = +process.env?.PORT;
 
   const app = fastify();
 
   const SECRET_PATH = bot.secretPathComponent();
+  const BOT_MODE = NODE_ENV === "production" ? "webhook" : "pooling";
   const WEBHOOK = `${BOT_WEBHOOK}/${SECRET_PATH}`;
 
-  // Bot
-  if (BOT_MODE === "webhook") {
-    bot.telegram.setWebhook(WEBHOOK);
-  } else {
-    bot.launch().catch();
+  // Checking the mode
+  switch (BOT_MODE) {
+    case "pooling":
+      bot.launch().catch();
+      break;
+    case "webhook":
+      bot.telegram.setWebhook(WEBHOOK);
+
+      app.post(`/${SECRET_PATH}`, (req, rep) => {
+        bot.handleUpdate(<Update>req.body, rep.raw);
+      });
+      break;
   }
 
-  // Webhook
-  app.post(`/${SECRET_PATH}`, (req, rep) => {
-    bot.handleUpdate(<Update>req.body, rep.raw);
-  });
-
+  // Running the bot
   app.listen(PORT, () => {
-    console.log(`TelegramBot: Running/${BOT_MODE} [${PORT}]`);
+    console.log("Bot", { PORT, BOT_MODE, BOT_WEBHOOK });
   });
 })();
+
+process.on("uncaughtException", (e) => {
+  console.log("uncaughtException", e);
+});
