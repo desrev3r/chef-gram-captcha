@@ -45,9 +45,7 @@ const PORT = +process.env?.PORT;
         bot.telegram.setWebhook(BOT_WEBHOOK_PATH);
 
         app.post(`/${BOT_WEBHOOK_SECRET_PATH}`, (req, res) => {
-          bot.handleUpdate(<Update>req.body, res.raw);
-
-          res.status(200).send();
+          bot.handleUpdate(<Update>req.body, res);
         });
         break;
     }
